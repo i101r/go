@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package main;
+
+option go_package = "employcity/storage";
+
+service Storage {
+    rpc Get(uid) returns (Response) {}
+    rpc Set(uid) returns (Response) {}
+    rpc Delete(uid) returns (Response) {}
+}
+
+message uid {
+    string message = 1;
+}
+
+message Response {
+    string message = 1;
+}
