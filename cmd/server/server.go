@@ -31,8 +31,7 @@ func Set() {
 
 }
 
-func (s *server) Get() (c context.Context, request *pb.Request)
-	(c context.Context, request *pb.Request){
+func (s *server) Get (c context.Context, request *pb.Request)	(c context.Context, request *pb.Request){
 
 		output := "Get response"
 
