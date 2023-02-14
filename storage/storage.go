@@ -5,8 +5,6 @@ import(
 )
 
 type Storage interface {
-	Connect()
-	Get(int Uid) (string Response, error)
-	Set(int Uid) (string Response, error)
-	Delete(int Uid) (string Response, error)
+	
+	
 }
