@@ -6,6 +6,7 @@ import (
 	"google.golang.org/grpc"
 	"golang.org/x/net/context"
 	pb "github.com/i101r/go/grpc"
+	storage "github.com/i101r/go/storage"
 )
 
 type server struct{
