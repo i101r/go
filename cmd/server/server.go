@@ -42,7 +42,7 @@ func (s *server) Set (c context.Context, request *pb.Uid) ( response *pb.Respons
 
 func (s *server) Get (c context.Context, request *pb.Uid) ( response *pb.Response,err error){
 
-		output := "Get response"
+		output := "Get response  final"
 
 		response = &pb.Response{
 			Message: output,
