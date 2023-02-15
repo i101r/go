@@ -20,7 +20,8 @@ type strg interface{
 	Delete(key string) (err error) 
 }
 
-var st strg = &storage.Memcache{}
+// var st strg = &storage.Memcache{}
+var st strg = &storage.Cache{}
 
 func main() {
 	listener, err := net.Listen("tcp", ":5300")
