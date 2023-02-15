@@ -59,7 +59,6 @@ func (s *server) Get (c context.Context, request *pb.GetRequest) ( response *pb.
 	return response, nil   
 }
 
-
 func (s *server) Delete (c context.Context, request *pb.GetRequest) ( response *pb.Response,err error){
 	
 	memc.Delete(request.Name)

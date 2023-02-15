@@ -30,7 +30,7 @@ func (m *Memcache) Connect(){
 		return
 	}
 
-	fmt.Printf("\nmemcache connection 127.0.0.1:11211")
+	fmt.Println("memcache connection 127.0.0.1:11211")
 
 	m.conn=conn
 }
