@@ -7,9 +7,10 @@ import(
 	"strconv"
 	"strings"
 	"errors"
+	"io"
 )
 
-type Memcached struct {
+type Memcache struct {
 	conn net.Conn
 }
 
@@ -22,18 +23,14 @@ var (
 )
 
 
-func (m *Memcached) Connect(){
-	conn, err := net.Dial("tcp", "localhost:11211" )
+func (m *Memcache) Connect(){
+	conn, err := net.Dial("tcp", "127.0.0.1:11211" )
 	
 	if err != nil {
 		return
 	}
 
-	fmt.Fprintf(conn, "GET / HTTP/1.0\r\n\r\n")
-
-	status, err := bufio.NewReader(conn).ReadString('\n')
-	
-	fmt.Fprintf(status)
+	fmt.Printf("\nmemcache connection 127.0.0.1:11211")
 
 	m.conn=conn
 }
@@ -56,7 +53,7 @@ func (m *Memcache) Get(key string) (value []byte, flags int, err error) {
 
 
 
-func (m *Memcached) readResponse( response *bufio.Reader, key string) (value []byte, flags int, err error) {
+func (m *Memcache) readResponse( response *bufio.Reader, key string) (value []byte, flags int, err error) {
 	
 	row, err1 := response.ReadString('\n')
 
@@ -166,7 +163,7 @@ func (m *Memcache) store(command string, key string, value []byte, flags int, ex
 	l := len(value)
 	s := command + " " + key + " " + strconv.Itoa(flags) + " " + strconv.FormatInt(exptime, 10) + " " + strconv.Itoa(l) + "\r\n"
 	
-	writer := bufio.NewWriter(memc.conn)
+	writer := bufio.NewWriter(m.conn)
 	
 	_, err = writer.WriteString(s)
 	if err != nil {
@@ -194,7 +191,7 @@ func (m *Memcache) store(command string, key string, value []byte, flags int, ex
 	}
 	
 	if row != "STORED\r\n" {
-		WriteError := errors.New("memcache: " + strings.TrimSpace(line))
+		WriteError := errors.New("memcache: " + strings.TrimSpace(row))
 		return WriteError
 	}
 	

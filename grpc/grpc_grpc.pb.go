@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.9.0
-// source: storage/storage.proto
+// source: grpc.proto
 
 package grpc
 
@@ -22,9 +22,9 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StorageClient interface {
-	Get(ctx context.Context, in *Uid, opts ...grpc.CallOption) (*Response, error)
-	Set(ctx context.Context, in *Uid, opts ...grpc.CallOption) (*Response, error)
-	Delete(ctx context.Context, in *Uid, opts ...grpc.CallOption) (*Response, error)
+	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Response, error)
+	Set(ctx context.Context, in *SetRequest, opts ...grpc.CallOption) (*Response, error)
+	Delete(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Response, error)
 }
 
 type storageClient struct {
@@ -35,7 +35,7 @@ func NewStorageClient(cc grpc.ClientConnInterface) StorageClient {
 	return &storageClient{cc}
 }
 
-func (c *storageClient) Get(ctx context.Context, in *Uid, opts ...grpc.CallOption) (*Response, error) {
+func (c *storageClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/main.Storage/Get", in, out, opts...)
 	if err != nil {
@@ -44,7 +44,7 @@ func (c *storageClient) Get(ctx context.Context, in *Uid, opts ...grpc.CallOptio
 	return out, nil
 }
 
-func (c *storageClient) Set(ctx context.Context, in *Uid, opts ...grpc.CallOption) (*Response, error) {
+func (c *storageClient) Set(ctx context.Context, in *SetRequest, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/main.Storage/Set", in, out, opts...)
 	if err != nil {
@@ -53,7 +53,7 @@ func (c *storageClient) Set(ctx context.Context, in *Uid, opts ...grpc.CallOptio
 	return out, nil
 }
 
-func (c *storageClient) Delete(ctx context.Context, in *Uid, opts ...grpc.CallOption) (*Response, error) {
+func (c *storageClient) Delete(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*Response, error) {
 	out := new(Response)
 	err := c.cc.Invoke(ctx, "/main.Storage/Delete", in, out, opts...)
 	if err != nil {
@@ -66,9 +66,9 @@ func (c *storageClient) Delete(ctx context.Context, in *Uid, opts ...grpc.CallOp
 // All implementations must embed UnimplementedStorageServer
 // for forward compatibility
 type StorageServer interface {
-	Get(context.Context, *Uid) (*Response, error)
-	Set(context.Context, *Uid) (*Response, error)
-	Delete(context.Context, *Uid) (*Response, error)
+	Get(context.Context, *GetRequest) (*Response, error)
+	Set(context.Context, *SetRequest) (*Response, error)
+	Delete(context.Context, *GetRequest) (*Response, error)
 	mustEmbedUnimplementedStorageServer()
 }
 
@@ -76,13 +76,13 @@ type StorageServer interface {
 type UnimplementedStorageServer struct {
 }
 
-func (UnimplementedStorageServer) Get(context.Context, *Uid) (*Response, error) {
+func (UnimplementedStorageServer) Get(context.Context, *GetRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedStorageServer) Set(context.Context, *Uid) (*Response, error) {
+func (UnimplementedStorageServer) Set(context.Context, *SetRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Set not implemented")
 }
-func (UnimplementedStorageServer) Delete(context.Context, *Uid) (*Response, error) {
+func (UnimplementedStorageServer) Delete(context.Context, *GetRequest) (*Response, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedStorageServer) mustEmbedUnimplementedStorageServer() {}
@@ -99,7 +99,7 @@ func RegisterStorageServer(s grpc.ServiceRegistrar, srv StorageServer) {
 }
 
 func _Storage_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Uid)
+	in := new(GetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -111,13 +111,13 @@ func _Storage_Get_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/main.Storage/Get",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StorageServer).Get(ctx, req.(*Uid))
+		return srv.(StorageServer).Get(ctx, req.(*GetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Storage_Set_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Uid)
+	in := new(SetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -129,13 +129,13 @@ func _Storage_Set_Handler(srv interface{}, ctx context.Context, dec func(interfa
 		FullMethod: "/main.Storage/Set",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StorageServer).Set(ctx, req.(*Uid))
+		return srv.(StorageServer).Set(ctx, req.(*SetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Storage_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Uid)
+	in := new(GetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -147,7 +147,7 @@ func _Storage_Delete_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: "/main.Storage/Delete",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StorageServer).Delete(ctx, req.(*Uid))
+		return srv.(StorageServer).Delete(ctx, req.(*GetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -173,5 +173,5 @@ var Storage_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "storage/storage.proto",
+	Metadata: "grpc.proto",
 }

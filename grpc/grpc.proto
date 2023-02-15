@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package main;
+
+option go_package = "../grpc";
+
+service Storage {
+    rpc Get(GetRequest) returns (Response) {}
+    rpc Set(SetRequest) returns (Response) {}
+    rpc Delete(GetRequest) returns (Response) {}
+}
+
+message SetRequest {
+    string name = 1;
+    string value = 2;
+}
+
+message GetRequest {
+    string name = 1;
+}
+
+message Response {
+    string message = 1;
+}
