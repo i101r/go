@@ -23,16 +23,18 @@ var (
 )
 
 
-func (m *Memcache) Connect(){
+func (m *Memcache) Connect() bool {
 	conn, err := net.Dial("tcp", "127.0.0.1:11211" )
 	
 	if err != nil {
-		return
+		return false
 	}
 
 	fmt.Println("memcache connection 127.0.0.1:11211")
 
 	m.conn=conn
+
+	return true
 }
 
 
@@ -49,8 +51,6 @@ func (m *Memcache) Get(key string) (value []byte, flags int, err error) {
 
 	return m.readResponse(response,key)
 }
-
-
 
 
 func (m *Memcache) readResponse( response *bufio.Reader, key string) (value []byte, flags int, err error) {

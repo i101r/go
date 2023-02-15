@@ -18,10 +18,12 @@ type Item struct {
 	Expiration 	int64
 }
 
-func (c *Cache) Connect(){
+func (c *Cache) Connect() bool{
 	c.Data=make(map[string]Item)
 
-	fmt.Println("Connect")
+	fmt.Println("Init cache")
+
+	return true
 }
 
 func (c *Cache) Get(key string) (value []byte, flags int, err error){
@@ -40,6 +42,10 @@ func (c *Cache) Get(key string) (value []byte, flags int, err error){
 	return []byte( c.Data[key].Value), 0, nil}
 
 func (c *Cache) Set(key string, value []byte, flags int, exptime int64) (err error){
+	if len(c.Data) == 0 {
+		c.Data=make(map[string]Item)
+	}
+
 	c.Lock()
 	defer c.Unlock()
 

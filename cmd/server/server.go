@@ -14,14 +14,14 @@ type server struct{
 }
 
 type strg interface{
-	Connect()
+	Connect() bool
 	Get(key string) (value []byte, flags int, err error)
 	Set(key string, value []byte, flags int, exptime int64) (err error)
 	Delete(key string) (err error) 
 }
 
-// var st strg = &storage.Memcache{}
-var st strg = &storage.Cache{}
+var st strg = &storage.Memcache{}
+// var st strg = &storage.Cache{}
 
 func main() {
 	listener, err := net.Listen("tcp", ":5300")
@@ -38,9 +38,9 @@ func main() {
 
 	pb.RegisterStorageServer(grpcServer, &server{})
 
-	
-	
-	st.Connect()
+	if !st.Connect(){
+		st = &storage.Cache{}
+	}
 
 	grpcServer.Serve(listener)
 
