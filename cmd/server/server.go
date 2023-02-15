@@ -13,24 +13,33 @@ type server struct{
 	pb.UnimplementedStorageServer
 }
 
-var memc = &storage.Memcache{}
+type strg interface{
+	Connect()
+	Get(key string) (value []byte, flags int, err error)
+	Set(key string, value []byte, flags int, exptime int64) (err error)
+	Delete(key string) (err error) 
+}
+
+var st strg = &storage.Memcache{}
 
 func main() {
 	listener, err := net.Listen("tcp", ":5300")
 
 	if err != nil {
-		fmt.Printf("\nListening :5300")
+		fmt.Println("Listening :5300")
 		return 
 	}
 
-	fmt.Printf("\nListening :5300")
+	fmt.Println("Listening :5300")
 
 	opts := []grpc.ServerOption{}
 	grpcServer := grpc.NewServer(opts...)
 
 	pb.RegisterStorageServer(grpcServer, &server{})
 
-	memc.Connect()
+	
+	
+	st.Connect()
 
 	grpcServer.Serve(listener)
 
@@ -38,7 +47,7 @@ func main() {
 
 func (s *server) Set (c context.Context, request *pb.SetRequest) ( response *pb.Response,err error){
 	
-	memc.Set(request.Name, []byte(request.Value), 0, 86400)
+	st.Set(request.Name, []byte(request.Value), 0, 86400)
 	
 	output := "Ok"
 
@@ -50,7 +59,7 @@ func (s *server) Set (c context.Context, request *pb.SetRequest) ( response *pb.
 
 func (s *server) Get (c context.Context, request *pb.GetRequest) ( response *pb.Response,err error){
 
-		output, _, _:=memc.Get(request.Name)
+		output, _, _:=st.Get(request.Name)
 
 		response = &pb.Response{
 			Message: string(output),
@@ -61,7 +70,7 @@ func (s *server) Get (c context.Context, request *pb.GetRequest) ( response *pb.
 
 func (s *server) Delete (c context.Context, request *pb.GetRequest) ( response *pb.Response,err error){
 	
-	memc.Delete(request.Name)
+	st.Delete(request.Name)
 
 	output := "Delete"
 

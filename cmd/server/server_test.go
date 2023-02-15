@@ -11,7 +11,7 @@
  var srv = &server{}
 
  func TestSet(t *testing.T){
-	memc.Connect()
+	st.Connect()
 	
 	setRequest.Name ="key1"
 	setRequest.Value ="incididunt"
@@ -20,7 +20,7 @@
 
 	res, err := srv.Set(ctx, setRequest)
 	
-	if err != nil &&  res.Message!="Ok" {
+	if err != nil  {
         t.Errorf("\nTestSet %s", getRequest.Name)
     }
 
@@ -50,7 +50,7 @@
 
 	res, err := srv.Get(ctx, getRequest)
 	
-	if err != nil &&  res.Message!="Ok" {
+	if err != nil {
         t.Errorf("\nTestDelete %s", getRequest.Name)
     }
 
